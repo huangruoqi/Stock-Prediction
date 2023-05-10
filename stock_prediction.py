@@ -57,8 +57,7 @@ def predict(stock_code):
 
   model = keras.Sequential([
     keras.layers.Input((TIMESTEPS, FEATURES)),
-    keras.layers.LSTM(128, return_sequences=True),
-    keras.layers.LSTM(32),
+    keras.layers.LSTM(128),
     keras.layers.Dense(32, activation='relu'),
     keras.layers.Dense(32, activation='relu'),
     keras.layers.Dense(32, activation='relu'),
@@ -88,9 +87,10 @@ def predict(stock_code):
 
   results = []
   current_input = []
-  for i in range(TIMESTEPS):
-    current_input.append(x_test[-1][i])
-  print(current_input)
+  for i in range(TIMESTEPS-1, -1, -1):
+    index = len(data)-i-1
+    current_input.append(data.iloc[index])
+
   for i in range(PREDICT_DAYS):
     output = model.predict(np.array([current_input]), verbose=0)
     results.append(list(output[0]))
